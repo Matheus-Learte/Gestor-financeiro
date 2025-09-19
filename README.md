@@ -32,7 +32,6 @@ Uma aplicação web moderna para controle de finanças pessoais, desenvolvida co
 ## 📁 Estrutura do Projeto
 
 ```
-Projeto1/
 ├── index.html          # Página principal
 ├── style.css           # Estilos da aplicação
 ├── script.js           # Lógica JavaScript
