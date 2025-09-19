@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gerenciador Financeiro</title>
+    <link rel="icon" type="image/jpeg" href="money.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Tela de Login/Cadastro -->
+    <div id="auth-screen" class="screen">
+        <div class="auth-container">
+            <h1>💰 Gerenciador Financeiro</h1>
+            <div class="auth-form">
+                <input type="text" id="username" placeholder="Nome de usuário" required>
+                <input type="password" id="password" placeholder="Senha" required>
+                <button onclick="login()">Entrar</button>
+                <button onclick="register()">Cadastrar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tela Principal -->
+    <div id="main-screen" class="screen hidden">
+        <header class="main-header">
+            <div class="header-left">
+                <div class="logo">
+                    <span class="logo-icon">💰</span>
+                    <h1>Meu Financeiro</h1>
+                </div>
+            </div>
+            <div class="header-right">
+                <div class="user-profile" onclick="openProfileModal()">
+                    <div class="user-avatar" id="user-avatar">👤</div>
+                    <div class="user-details">
+                        <span class="welcome-text">Olá,</span>
+                        <span id="current-user" class="username"></span>
+                    </div>
+                </div>
+                <button class="logout-btn" onclick="logout()">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+                        <polyline points="16,17 21,12 16,7"/>
+                        <line x1="21" y1="12" x2="9" y2="12"/>
+                    </svg>
+                    Sair
+                </button>
+            </div>
+        </header>
+
+        <!-- Resumo Financeiro -->
+        <div class="summary">
+            <div class="summary-card income">
+                <h3>Ganhos</h3>
+                <p id="total-income">R$ 0,00</p>
+            </div>
+            <div class="summary-card expense">
+                <h3>Gastos</h3>
+                <p id="total-expense">R$ 0,00</p>
+            </div>
+            <div class="summary-card balance">
+                <h3>Saldo</h3>
+                <p id="balance">R$ 0,00</p>
+            </div>
+        </div>
+
+        <!-- Formulário de Transação -->
+        <div class="transaction-form">
+            <h2>Nova Transação</h2>
+            <form id="transaction-form">
+                <input type="text" id="name" placeholder="Nome da transação" required>
+                <textarea id="description" placeholder="Descrição (opcional)" rows="3"></textarea>
+                <input type="number" id="amount" placeholder="Valor" step="0.01" required>
+                <select id="type" required>
+                    <option value="">Selecione o tipo</option>
+                    <option value="income">Ganho</option>
+                    <option value="expense">Gasto</option>
+                </select>
+                <input type="date" id="date" required>
+                <button type="submit">Adicionar</button>
+            </form>
+        </div>
+
+        <!-- Lista de Transações -->
+        <div class="transactions" onclick="openHistoryModal()">
+            <h2>Histórico de Transações</h2>
+            <div id="transactions-list"></div>
+        </div>
+    </div>
+
+    <!-- Modal do Histórico -->
+    <div id="history-modal" class="modal hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Histórico Completo de Transações</h2>
+                <button class="close-btn" onclick="closeHistoryModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div id="full-transactions-list"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Detalhes da Transação -->
+    <div id="details-modal" class="modal hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Detalhes da Transação</h2>
+                <button class="close-btn" onclick="closeDetailsModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div id="transaction-details"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Configurações do Perfil -->
+    <div id="profile-modal" class="modal hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Configurações do Perfil</h2>
+                <button class="close-btn" onclick="closeProfileModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="profile-form">
+                    <div class="profile-section">
+                        <h3>Foto do Perfil</h3>
+                        <div class="avatar-selection">
+                            <div class="avatar-option" data-avatar="👤">👤</div>
+                            <div class="avatar-option" data-avatar="👨">👨</div>
+                            <div class="avatar-option" data-avatar="👩">👩</div>
+                            <div class="avatar-option" data-avatar="👱">👱</div>
+                            <div class="avatar-option" data-avatar="👨‍💼">👨‍💼</div>
+                            <div class="avatar-option" data-avatar="👩‍💼">👩‍💼</div>
+                            <div class="avatar-option" data-avatar="👨‍🎓">👨‍🎓</div>
+                            <div class="avatar-option" data-avatar="👩‍🎓">👩‍🎓</div>
+                        </div>
+                    </div>
+                    <div class="profile-section">
+                        <h3>Informações Pessoais</h3>
+                        <input type="text" id="display-name" placeholder="Nome de exibição">
+                        <input type="email" id="user-email" placeholder="E-mail (opcional)">
+                    </div>
+                    <div class="profile-section">
+                        <h3>Segurança</h3>
+                        <input type="password" id="current-password" placeholder="Senha atual">
+                        <input type="password" id="new-password" placeholder="Nova senha (opcional)">
+                        <input type="password" id="confirm-password" placeholder="Confirmar nova senha">
+                    </div>
+                    <button type="submit" class="save-profile-btn">Salvar Alterações</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Container para notificações toast -->
+    <div id="toast-container"></div>
+
+    <!-- Modal de Confirmação -->
+    <div id="confirm-modal" class="modal hidden">
+        <div class="modal-content confirm-modal-content">
+            <div class="confirm-header">
+                <div class="confirm-icon">⚠️</div>
+                <h3 id="confirm-title">Confirmar ação</h3>
+            </div>
+            <div class="confirm-body">
+                <p id="confirm-message">Tem certeza que deseja continuar?</p>
+            </div>
+            <div class="confirm-actions">
+                <button class="confirm-btn cancel" onclick="closeConfirmModal(false)">Cancelar</button>
+                <button class="confirm-btn confirm" onclick="closeConfirmModal(true)">Confirmar</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
